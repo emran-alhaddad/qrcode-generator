@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fancy QR Code Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-400 to-indigo-600 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full">
+        <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">Fancy QR Code Generator</h1>
+        <div class="mb-6">
+            <label for="url" class="block text-sm font-medium text-gray-700 mb-2">Enter URL</label>
+            <input type="url" id="url" placeholder="https://example.com" 
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+        </div>
+        <button id="generate" 
+                class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105">
+            Generate QR Code
+        </button>
+        <div id="qrcode" class="mt-8 flex justify-center"></div>
+        <div id="download-container" class="mt-4 text-center hidden">
+            <a id="download" download="qrcode.png" 
+               class="inline-block bg-green-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105">
+                Download QR Code
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('url');
+        const generateBtn = document.getElementById('generate');
+        const qrcodeContainer = document.getElementById('qrcode');
+        const downloadContainer = document.getElementById('download-container');
+        const downloadLink = document.getElementById('download');
+
+        let qr = null;
+
+        generateBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+            if (url) {
+                if (qr) {
+                    qr.clear();
+                    qrcodeContainer.innerHTML = '';
+                }
+                qr = new QRCode(qrcodeContainer, {
+                    text: url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#5a67d8",
+                    colorLight: "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                
+                // Show download button after QR code is generated
+                setTimeout(() => {
+                    const img = qrcodeContainer.querySelector('img');
+                    downloadLink.href = img.src;
+                    downloadContainer.classList.remove('hidden');
+                }, 100);
+            }
+        });
+
+        urlInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                generateBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
